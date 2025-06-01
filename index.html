@@ -113,6 +113,7 @@
         soundFile.play();
         sweepX = 50;
         sweeping = true;
+        logPlayback(currentData);
       }
     }
 
@@ -121,6 +122,11 @@
         soundFile.stop();
         sweeping = false;
       }
+    }
+
+    function logPlayback(dataset) {
+      const timestamp = new Date().toISOString();
+      console.log(`[LOG] Played ${dataset} at ${timestamp}`);
     }
   </script>
 </body>

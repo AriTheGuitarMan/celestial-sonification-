@@ -1,5 +1,3 @@
-# celestial-sonification-
+# Combined Celestial Sonification App
 
-stuff 
-stuff 
-stuff
+Includes UI, scripts, assets.
