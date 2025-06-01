@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Celestial Sonification</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/addons/p5.sound.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      background: #0a0f1c;
+      color: #fff;
+      font-family: 'Arial', sans-serif;
+    }
+    #container {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+    }
+    #left-panel {
+      flex: 2;
+      padding: 20px;
+      border-right: 2px solid #222;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    #right-panel {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background-color: #111827;
+    }
+    select, button {
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 1em;
+      background: #1e293b;
+      color: #fff;
+      border: 1px solid #334155;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <div id="left-panel">
+      <div id="canvas-holder"></div>
+      <p id="sweep-text">Sweep across to hear the stars</p>
+    </div>
+    <div id="right-panel">
+      <h2>Celestial Sonification</h2>
+      <select id="dataSelector">
+        <option value="kepler">Kepler Light Curve</option>
+        <option value="jwst">JWST Spectrum</option>
+        <option value="cassini">Cassini Image</option>
+      </select>
+      <button onclick="playSonification()">▶ Play</button>
+      <button onclick="stopSonification()">■ Stop</button>
+    </div>
+  </div>
+
+  <script>
+    let currentData = "kepler";
+    let soundFile;
+    let sweepX = 0;
+    let sweeping = false;
+
+    function setup() {
+      let cnv = createCanvas(800, 400);
+      cnv.parent("canvas-holder");
+      frameRate(30);
+      textAlign(CENTER, CENTER);
+      document.getElementById("dataSelector").addEventListener('change', (e) => {
+        currentData = e.target.value;
+        loadDemoSound(currentData);
+      });
+      loadDemoSound(currentData);
+    }
+
+    function draw() {
+      background(10);
+      stroke(255);
+      noFill();
+      rect(50, 50, width - 100, height - 100);
+
+      if (sweeping) {
+        let pos = map(sweepX, 0, width, 0, 1);
+        stroke(255, 0, 0);
+        line(sweepX, 50, sweepX, height - 50);
+        sweepX += 4;
+        if (sweepX > width - 50) {
+          sweeping = false;
+        }
+      }
+    }
+
+    function loadDemoSound(dataType) {
+      if (soundFile) soundFile.stop();
+      let soundPath = {
+        kepler: "assets/kepler_sonification.mp3",
+        jwst: "assets/jwst_spectrum.mp3",
+        cassini: "assets/cassini_image.mp3"
+      }[dataType];
+      soundFile = loadSound(soundPath);
+    }
+
+    function playSonification() {
+      if (soundFile && !soundFile.isPlaying()) {
+        soundFile.play();
+        sweepX = 50;
+        sweeping = true;
+      }
+    }
+
+    function stopSonification() {
+      if (soundFile && soundFile.isPlaying()) {
+        soundFile.stop();
+        sweeping = false;
+      }
+    }
+  </script>
+</body>
+</html>
